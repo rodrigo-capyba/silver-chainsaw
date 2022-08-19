@@ -1,0 +1,40 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      args:
+        requirements_file: requirements/local.txt
+    command: python manage.py runserver 0.0.0.0:80
+    stdin_open: true
+    tty: true
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/app
+      - ./data:/data
+    depends_on:
+      - db
+    env_file: .env
+    healthcheck:
+      test: curl --fail http://localhost:8000 || exit 1 
+      interval: 10s
+      timeout: 10s
+      start_period: 10s
+      retries: 3
+
+
+  db:
+    image: 'postgres:13.7-alpine'
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: "db"
+      POSTGRES_PASSWORD: "postgres"
+    volumes:
+      - ".:/app:rw"
+
+  swagger-editor:
+    image: swaggerapi/swagger-editor:latest
+    ports:
+      - "8081:8080"

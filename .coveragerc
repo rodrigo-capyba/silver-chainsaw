@@ -1,0 +1,3 @@
+[run]
+source=silver-chainsaw
+omit = */tests/*, */migrations/*, */config.py, */baker_recipes.py, *_multischema.py, *conftest.py
